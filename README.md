@@ -15,9 +15,3 @@ This is a lightweight Retrieval-Augmented Generation (RAG) chatbot built with [S
 
 ![Demo](demo.png)
 
-## 🚀 How to Run Locally
-
-1. **Clone this repo**  
-   ```bash
-   git clone https://github.com/your-username/rag-chatbot.git
-   cd rag-chatbot
