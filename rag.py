@@ -4,7 +4,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 
-#  Use updated huggingface embeddings/LLM
+
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_huggingface.llms import HuggingFacePipeline
 
@@ -36,11 +36,11 @@ if st.button(" Build RAG Bot") and uploaded_files:
         splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
         chunks = splitter.split_documents(all_docs)
 
-        #  Use up-to-date embedding class
+        
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         vectorstore = FAISS.from_documents(chunks, embeddings)
 
-        # Load FLAN-T5 model
+       
         model_id = "google/flan-t5-base"
         tokenizer = AutoTokenizer.from_pretrained(model_id)
         model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
@@ -48,23 +48,22 @@ if st.button(" Build RAG Bot") and uploaded_files:
     "text2text-generation",
     model=model,
     tokenizer=tokenizer,
-    max_length=512,         # Increase maximum response length
-    do_sample=True,         # Enable sampling for more natural responses
-    temperature=0.7,        # Controls randomness; lower = more deterministic
-    top_p=0.9,              # Nucleus sampling
-    repetition_penalty=1.2  # Discourage repeating phrases
+    max_length=512,        
+    do_sample=True,         
+    temperature=0.7,        
+    top_p=0.9,             
+    repetition_penalty=1.2 
 )
 
         llm = HuggingFacePipeline(pipeline=pipe)
 
-        # Save the chain in session_state
         st.session_state.qa_chain = RetrievalQA.from_chain_type(
             llm=llm, retriever=vectorstore.as_retriever()
         )
 
     st.success("RAG Bot is ready! Ask your question below ")
 
-#  Ask a question
+
 if "qa_chain" in st.session_state:
     question = st.text_input("Ask a question:")
 
@@ -74,4 +73,4 @@ if "qa_chain" in st.session_state:
             answer = st.session_state.qa_chain.run(formatted_q)
             st.markdown(f"*Answer:* {answer}")
 else:
-    st.info("Upload 1–3 files and click 'Build RAG Bot' to activate the chatbot.")
+    st.info("Upload a file and click 'Build RAG Bot' to activate the chatbot.")
